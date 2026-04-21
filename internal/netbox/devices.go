@@ -15,8 +15,8 @@ type DeviceAPI struct {
 
 type Device struct {
 	ApiBaseFields
-	name       string
-	DeviceType DeviceType
+	Name       string     `json:"name"`
+	DeviceType DeviceType `json:"device_type"`
 }
 
 func NewDeviceAPI(client *NetboxClient) *DeviceAPI {
@@ -42,6 +42,5 @@ func (a *DeviceAPI) List(ctx context.Context) ([]Device, error) {
 		return nil, err
 	}
 
-	devices := []Device{}
-	return devices, nil
+	return result.Results, nil
 }

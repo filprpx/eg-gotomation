@@ -8,7 +8,10 @@ type DeviceTypeAPI struct {
 	client *NetboxClient
 }
 
-type DeviceType struct{}
+type DeviceType struct {
+	ApiBaseFields
+	Name string `json:"name"`
+}
 
 func NewDeviceTypeAPI(client *NetboxClient) *DeviceTypeAPI {
 	return &DeviceTypeAPI{

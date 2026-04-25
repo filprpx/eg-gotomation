@@ -7,7 +7,8 @@ type DcimAPI struct {
 
 	Cable      *CableAPI
 	Device     *DeviceAPI
-	DeviceType *DeviceTypeAPI
+	DeviceType *DeviceTypesAPI
+	DeviceRole *DeviceRolesAPI
 }
 
 func NewDcimAPI(client *NetboxClient) (*DcimAPI, error) {

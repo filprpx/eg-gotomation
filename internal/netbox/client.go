@@ -57,6 +57,7 @@ func (c *NetboxClient) Auth() {
 }
 
 func (c *NetboxClient) setHeader(req *http.Request) {
+	req.Header.Add("Content-Type", "application/json")
 	for key, values := range c.header {
 		for _, value := range values {
 			req.Header.Add(key, value)
@@ -71,16 +72,16 @@ func (c *NetboxClient) get(ctx context.Context, path string) (*http.Response, er
 	return c.http.Do(req)
 }
 
-func (c *NetboxClient) post(ctx context.Context, path string) (*http.Response, error) {
+func (c *NetboxClient) post(ctx context.Context, path string, body io.Reader) (*http.Response, error) {
 	url := c.url + path
-	req, _ := http.NewRequestWithContext(ctx, "post", url, nil)
+	req, _ := http.NewRequestWithContext(ctx, "post", url, body)
 	c.setHeader(req)
 	return c.http.Do(req)
 }
 
-func (c *NetboxClient) patch(ctx context.Context, path string) (*http.Response, error) {
+func (c *NetboxClient) patch(ctx context.Context, path string, body io.Reader) (*http.Response, error) {
 	url := c.url + path
-	req, _ := http.NewRequestWithContext(ctx, "patch", url, nil)
+	req, _ := http.NewRequestWithContext(ctx, "patch", url, body)
 	c.setHeader(req)
 	return c.http.Do(req)
 }

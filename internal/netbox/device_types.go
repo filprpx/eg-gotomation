@@ -4,22 +4,24 @@ import (
 	"context"
 )
 
-type DeviceTypeAPI struct {
+type DeviceTypesAPI struct {
 	client *NetboxClient
 }
 
 type DeviceType struct {
 	ApiBaseFields
-	Name string `json:"name"`
+	Model       string `json:"model"`
+	Slug        string `json:"slug"`
+	DeviceCount int    `json:"device_count"`
 }
 
-func NewDeviceTypeAPI(client *NetboxClient) *DeviceTypeAPI {
-	return &DeviceTypeAPI{
+func NewDeviceTypeAPI(client *NetboxClient) *DeviceTypesAPI {
+	return &DeviceTypesAPI{
 		client: client,
 	}
 }
 
-func (a *DeviceTypeAPI) List(ctx context.Context) ([]DeviceType, error) {
+func (a *DeviceTypesAPI) List(ctx context.Context) ([]DeviceType, error) {
 	aDeviceTypes := []DeviceType{}
 	return aDeviceTypes, nil
 }

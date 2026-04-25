@@ -10,8 +10,11 @@ type ApiListResponse[T any] struct {
 }
 
 type ApiBaseFields struct {
-	Id          int    `json:"id"`
-	Url         string `json:"url"`
-	Display_url string `json:"display_url"`
-	Display     string `json:"display"`
+	Id          int    `json:"id,omitempty"`
+	Url         string `json:"url,omitempty"`
+	Display_url string `json:"display_url,omitempty"`
+	Display     string `json:"display,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Slug        string `json:"slug,omitempty"`
+	Description string `json:"description,omitempty"`
 }

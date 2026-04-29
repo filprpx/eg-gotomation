@@ -5,8 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 )
 
 type DeviceAPI struct {
@@ -45,18 +43,18 @@ func NewDeviceAPI(client *NetboxClient) *DeviceAPI {
 }
 
 func (a *DeviceAPI) List(ctx context.Context) ([]Device, error) {
-	resp, err := a.client.get(ctx, "/api/dcim/devices")
+	res, err := a.client.get(ctx, "/api/dcim/devices")
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer res.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, a.client.apiError(resp)
+	if IsError(res) {
+		return nil, a.client.apiError(res)
 	}
 
 	var result ApiListResponse[Device]
-	err = json.NewDecoder(resp.Body).Decode(&result)
+	err = json.NewDecoder(res.Body).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
@@ -69,18 +67,18 @@ func (a *DeviceAPI) Get(ctx context.Context, id int) (*Device, error) {
 		return nil, fmt.Errorf("id can't be zero")
 	}
 
-	resp, err := a.client.get(ctx, fmt.Sprintf("/api/dcim/devices/%d", id))
+	res, err := a.client.get(ctx, fmt.Sprintf("/api/dcim/devices/%d", id))
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer res.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, a.client.apiError(resp)
+	if IsError(res) {
+		return nil, a.client.apiError(res)
 	}
 
 	var result Device
-	err = json.NewDecoder(resp.Body).Decode(&result)
+	err = json.NewDecoder(res.Body).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
@@ -98,23 +96,21 @@ func (a *DeviceAPI) Create(ctx context.Context, device *Device) (*Device, error)
 		return nil, fmt.Errorf("failed to marshal: %w", err)
 	}
 
-	fmt.Println(string(payload))
-
-	resp, err := a.client.post(ctx,
+	res, err := a.client.post(ctx,
 		"/api/dcim/devices/",
 		bytes.NewReader(payload),
 	)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer res.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, a.client.apiError(resp)
+	if IsError(res) {
+		return nil, a.client.apiError(res)
 	}
 
 	var result Device
-	err = json.NewDecoder(resp.Body).Decode(&result)
+	err = json.NewDecoder(res.Body).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
@@ -138,17 +134,17 @@ func (a *DeviceAPI) Update(ctx context.Context, device *Device) (bool, error) {
 
 	fmt.Println(string(payload))
 
-	resp, err := a.client.patch(ctx,
+	res, err := a.client.patch(ctx,
 		fmt.Sprintf("/api/dcim/devices/%d/", device.Id),
 		bytes.NewReader(payload),
 	)
 	if err != nil {
 		return false, err
 	}
-	defer resp.Body.Close()
+	defer res.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return false, a.client.apiError(resp)
+	if IsError(res) {
+		return false, a.client.apiError(res)
 	}
 
 	return true, nil
@@ -163,20 +159,17 @@ func (a *DeviceAPI) Delete(ctx context.Context, device *Device) (bool, error) {
 		return false, fmt.Errorf("device.Id can't be zero")
 	}
 
-	resp, err := a.client.delete(ctx,
-		fmt.Sprintf("/api/dcim/devices/%d", device.Id),
+	res, err := a.client.delete(ctx,
+		fmt.Sprintf("/api/dcim/devices/%d/", device.Id),
 	)
 	if err != nil {
 		return false, err
 	}
-	defer resp.Body.Close()
+	defer res.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return false, a.client.apiError(resp)
+	if IsError(res) {
+		return false, a.client.apiError(res)
 	}
-
-	body, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
 
 	return true, nil
 }

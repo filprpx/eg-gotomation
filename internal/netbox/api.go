@@ -1,6 +1,6 @@
 package netbox
 
-import ()
+import "net/http"
 
 type ApiListResponse[T any] struct {
 	Count    int    `json:"count"`
@@ -17,4 +17,12 @@ type ApiBaseFields struct {
 	Name        string `json:"name,omitempty"`
 	Slug        string `json:"slug,omitempty"`
 	Description string `json:"description,omitempty"`
+}
+
+func IsSuccess(res *http.Response) bool {
+	return res.StatusCode > 199 && res.StatusCode < 300
+}
+
+func IsError(res *http.Response) bool {
+	return res.StatusCode > 399
 }

@@ -1,40 +1,47 @@
 package netbox
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/filprpx/eg-gotomation/internal/netbox/api/dcim"
 	"github.com/filprpx/eg-gotomation/internal/restapi"
 )
 
-const ENV_API_KEY = "NETBOX_API_KEY"
-
 type Client struct {
 	restapi.BaseClient
 
-	Device dcim.DeviceAPI
+	Cable        *dcim.CableAPI
+	Device       *dcim.DeviceAPI
+	DeviceRole   *dcim.DeviceRoleAPI
+	DeviceType   *dcim.DeviceTypeAPI
+	Manufacturer *dcim.ManufacturerAPI
+	Site         *dcim.SiteAPI
 }
 
-func NewClient(baseUrl string) (*Client, error) {
-	client := Client{
-		BaseClient: *restapi.NewBaseClient(baseUrl),
-	}
+func (c *Client) PrepareHeaders() {
+	c.Header.Add("Authorization", "Token "+c.ApiKey)
+}
 
-	err := client.Auth()
+func NewClient() (*Client, error) {
+	cfg := DefaultConfig()
+	return NewClientWithConfig(cfg)
+}
+
+func NewClientWithConfig(cfg *Config) (*Client, error) {
+	err := ValidateConfig(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("NewClient: %w", err)
+		return nil, err
 	}
 
-	return &client, nil
-}
-
-func (c *Client) Auth() error {
-	apiKey := os.Getenv(ENV_API_KEY)
-	if apiKey == "" {
-		return fmt.Errorf("Auth: You must set env var %s", ENV_API_KEY)
+	client := &Client{
+		Config: *cfg,
 	}
 
-	c.Header.Add("Authorization", "Token "+apiKey)
-	return nil
+	client.PrepareHeaders()
+
+	client.Cable = dcim.NewCableAPI(client)
+	client.Device = dcim.NewDeviceAPI(client)
+	client.DeviceRole = dcim.NewDeviceRoleAPI(client)
+	client.DeviceType = dcim.NewDeviceTypeAPI(client)
+	client.Manufacturer = dcim.NewManufacturerAPI(client)
+
+	return client, nil
 }

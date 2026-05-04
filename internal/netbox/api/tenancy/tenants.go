@@ -6,12 +6,12 @@ import (
 	"github.com/filprpx/eg-gotomation/internal/restapi"
 )
 
-type DeviceAPI struct {
-	*api.BaseAPI[models.Device]
+type TenantAPI struct {
+	*api.BaseAPI[models.Tenant]
 }
 
-func NewDeviceAPI(d restapi.Doer) *DeviceAPI {
-	return &DeviceAPI{
-		BaseAPI: api.NewBaseAPI[models.Device](d, "/api/dcim/devices/"),
+func NewTenantAPI(d restapi.Doer) *TenantAPI {
+	return &TenantAPI{
+		BaseAPI: api.NewBaseAPI[models.Tenant](d, "/api/dcim/tenants/"),
 	}
 }

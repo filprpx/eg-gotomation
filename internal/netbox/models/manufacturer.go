@@ -8,7 +8,7 @@ type Manufacturer struct {
 	ApiBaseFields
 }
 
-func (m *Manufacturer) MapToWrite() *ManufacturerWrite {
+func (m Manufacturer) MapToWrite() ApiResourceWrite {
 	return &ManufacturerWrite{
 		ApiWriteBaseFields: *m.ApiBaseFields.MapToWrite(),
 	}

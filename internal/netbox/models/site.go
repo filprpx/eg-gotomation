@@ -8,7 +8,7 @@ type Site struct {
 	ApiBaseFields
 }
 
-func (s *Site) MapToWrite() *SiteWrite {
+func (s Site) MapToWrite() ApiResourceWrite {
 	return &SiteWrite{
 		ApiWriteBaseFields: *s.ApiBaseFields.MapToWrite(),
 	}

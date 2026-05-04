@@ -4,22 +4,22 @@ import (
 	"context"
 	"io"
 	"net/http"
-	"time"
 )
 
 type BaseClient struct {
-	BaseUrl string
-	HTTP    *http.Client
-	Header  http.Header
+	Config
 }
 
 func NewBaseClient(baseUrl string) *BaseClient {
+	cfg := NewConfig()
+	cfg.BaseUrl = baseUrl
+
+	return NewBaseClientWithConfig(cfg)
+}
+
+func NewBaseClientWithConfig(cfg *Config) *BaseClient {
 	return &BaseClient{
-		BaseUrl: baseUrl,
-		HTTP: &http.Client{
-			Timeout: 30 * time.Second,
-		},
-		Header: make(http.Header),
+		Config: *cfg,
 	}
 }
 

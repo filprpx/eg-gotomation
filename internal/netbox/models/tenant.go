@@ -8,7 +8,7 @@ type Tenant struct {
 	ApiBaseFields
 }
 
-func (t *Tenant) MapToWrite() *TenantWrite {
+func (t Tenant) MapToWrite() ApiResourceWrite {
 	return &TenantWrite{
 		ApiWriteBaseFields: *t.ApiBaseFields.MapToWrite(),
 	}

@@ -10,14 +10,20 @@ import (
 )
 
 func main() {
-	netbox, err := netbox.NewClient()
+	cfg, err := netbox.ConfigFromEnv()
+	if err != nil {
+		log.Fatal(err)
+	}
+	cfg.SkipTLSVerify()
+
+	netbox, err := netbox.NewClientWithConfig(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	ctx := context.Background()
 
-	devices, err := netbox.DCIM.Device.List(ctx)
+	devices, err := netbox.Device.List(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,7 +34,7 @@ func main() {
 
 		fmt.Printf("retriving data...\n")
 
-		dev_info, err := netbox.DCIM.Device.Get(ctx, device.Id)
+		dev_info, err := netbox.Device.Get(ctx, device.Id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -36,16 +42,14 @@ func main() {
 		fmt.Printf("device info retrieved!\n")
 		fmt.Printf("device_type for this device is: %s\n", dev_info.DeviceType.Display)
 
-		fmt.Printf("testing update\n")
-
-		device.Description = "teste 1"
-		ok, err := netbox.DCIM.Device.Update(ctx, &device)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if ok {
-			fmt.Println("Device updated successfuly!")
-		}
+		// fmt.Printf("testing update\n")
+		//
+		// device.Description = "teste 1"
+		// err = netbox.Device.Update(ctx, &device)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		//
+		// fmt.Println("Device updated successfuly!")
 	}
 }

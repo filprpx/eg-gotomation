@@ -8,7 +8,7 @@ type DeviceRole struct {
 	ApiBaseFields
 }
 
-func (d *DeviceRole) MapToWrite() *DeviceRoleWrite {
+func (d DeviceRole) MapToWrite() ApiResourceWrite {
 	return &DeviceRoleWrite{
 		ApiWriteBaseFields: *d.ApiBaseFields.MapToWrite(),
 	}

@@ -8,9 +8,9 @@ type Location struct {
 	ApiBaseFields
 }
 
-func (l *Location) MapToWrite() *LocationWrite {
+func (d Location) MapToWrite() ApiResourceWrite {
 	return &LocationWrite{
-		ApiWriteBaseFields: *l.ApiBaseFields.MapToWrite(),
+		ApiWriteBaseFields: *d.ApiBaseFields.MapToWrite(),
 	}
 }
 

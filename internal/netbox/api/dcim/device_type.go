@@ -1,13 +1,17 @@
 package dcim
 
-import "github.com/filprpx/eg-gotomation/internal/restapi"
+import (
+	"github.com/filprpx/eg-gotomation/internal/netbox/api"
+	"github.com/filprpx/eg-gotomation/internal/netbox/models"
+	"github.com/filprpx/eg-gotomation/internal/restapi"
+)
 
 type DeviceTypeAPI struct {
-	doer *restapi.Doer
+	*api.BaseAPI[models.DeviceType]
 }
 
-func NewDeviceTypeAPI(d *restapi.Doer) *DeviceTypeAPI {
+func NewDeviceTypeAPI(d restapi.Doer) *DeviceTypeAPI {
 	return &DeviceTypeAPI{
-		doer: d,
+		BaseAPI: api.NewBaseAPI[models.DeviceType](d, "/api/dcim/device-types/"),
 	}
 }

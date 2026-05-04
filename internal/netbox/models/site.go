@@ -1,19 +1,19 @@
 package models
 
 type NestedSite struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
 type Site struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
-func (s Site) MapToWrite() ApiResourceWrite {
+func (s Site) MapToWrite() APIResourceWrite {
 	return &SiteWrite{
-		ApiWriteBaseFields: *s.ApiBaseFields.MapToWrite(),
+		APIWriteBaseFields: *s.APIBaseFields.MapToWrite(),
 	}
 }
 
 type SiteWrite struct {
-	ApiWriteBaseFields
+	APIWriteBaseFields
 }

@@ -6,14 +6,14 @@ import (
 )
 
 type Config struct {
-	BaseUrl string
+	BaseURL string
 	HTTP    *http.Client
 	Header  http.Header
 }
 
 func NewConfig() *Config {
 	return &Config{
-		BaseUrl: "",
+		BaseURL: "",
 		HTTP: &http.Client{
 			Timeout: 30 * time.Second,
 		},

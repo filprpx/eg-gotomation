@@ -34,13 +34,13 @@ func main() {
 
 		fmt.Printf("retriving data...\n")
 
-		dev_info, err := netbox.Device.Get(ctx, device.Id)
+		devInfo, err := netbox.Device.Get(ctx, device.Id)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		fmt.Printf("device info retrieved!\n")
-		fmt.Printf("device_type for this device is: %s\n", dev_info.DeviceType.Display)
+		fmt.Printf("device_type for this device is: %s\n", devInfo.DeviceType.Display)
 
 		// fmt.Printf("testing update\n")
 		//

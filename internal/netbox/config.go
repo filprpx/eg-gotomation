@@ -7,7 +7,7 @@ import (
 	"github.com/filprpx/eg-gotomation/internal/restapi"
 )
 
-const ENV_API_BASE_URL = "NETBOX_API_BASE_URL"
+const EnvAPIBaseURL = "NETBOX_API_BASE_URL"
 
 type Config struct {
 	restapi.Config
@@ -22,29 +22,29 @@ func DefaultConfig() *Config {
 }
 
 func ConfigFromEnv() (*Config, error) {
-	baseUrl := os.Getenv(ENV_API_BASE_URL)
-	if baseUrl == "" {
-		return nil, fmt.Errorf("ConfigFromEnv: %s not configured", ENV_API_BASE_URL)
+	baseURL := os.Getenv(EnvAPIBaseURL)
+	if baseURL == "" {
+		return nil, fmt.Errorf("ConfigFromEnv: %s not configured", EnvAPIBaseURL)
 	}
 
-	apiKey := os.Getenv(ENV_API_KEY)
+	apiKey := os.Getenv(EnvAPIKey)
 	if apiKey == "" {
-		return nil, fmt.Errorf("ConfigFromEnv: %s not configured", ENV_API_KEY)
+		return nil, fmt.Errorf("ConfigFromEnv: %s not configured", EnvAPIKey)
 	}
 
 	cfg := DefaultConfig()
-	cfg.BaseUrl = baseUrl
-	cfg.ApiKey = apiKey
+	cfg.BaseURL = baseURL
+	cfg.APIKey = apiKey
 
 	return cfg, nil
 }
 
 func ValidateConfig(cfg *Config) error {
-	if cfg.BaseUrl == "" {
+	if cfg.BaseURL == "" {
 		return fmt.Errorf("BaseUrl must be specified")
 	}
 
-	if cfg.ApiKey == "" {
+	if cfg.APIKey == "" {
 		return fmt.Errorf("ApiKey must be specified")
 	}
 

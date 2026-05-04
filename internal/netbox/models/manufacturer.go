@@ -1,19 +1,19 @@
 package models
 
 type NestedManufacturer struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
 type Manufacturer struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
-func (m Manufacturer) MapToWrite() ApiResourceWrite {
+func (m Manufacturer) MapToWrite() APIResourceWrite {
 	return &ManufacturerWrite{
-		ApiWriteBaseFields: *m.ApiBaseFields.MapToWrite(),
+		APIWriteBaseFields: *m.APIBaseFields.MapToWrite(),
 	}
 }
 
 type ManufacturerWrite struct {
-	ApiWriteBaseFields
+	APIWriteBaseFields
 }

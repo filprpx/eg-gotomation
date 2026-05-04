@@ -16,7 +16,7 @@ func IsError(res *http.Response) bool {
 }
 
 // TODO: give this a better name, make sure it has the right level of abstraction on how to deal with the api errors
-func ApiError(r *http.Response) error {
+func APIError(r *http.Response) error {
 	url := r.Request.URL.String()
 
 	limitedReader := io.LimitReader(r.Body, 1024)

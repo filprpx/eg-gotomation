@@ -1,26 +1,26 @@
 package models
 
 type NestedDeviceType struct {
-	ApiBaseFields
+	APIBaseFields
 	Manufacturer NestedManufacturer `json:"manufacturer"`
 	Model        string             `json:"model"`
 }
 
 type DeviceType struct {
-	ApiBaseFields
+	APIBaseFields
 	Manufacturer NestedManufacturer `json:"manufacturer"`
 	Model        string             `json:"model"`
 	DeviceCount  int                `json:"device_count"`
 }
 
-func (d DeviceType) MapToWrite() ApiResourceWrite {
+func (d DeviceType) MapToWrite() APIResourceWrite {
 	return &DeviceTypeWrite{
-		ApiWriteBaseFields: *d.ApiBaseFields.MapToWrite(),
+		APIWriteBaseFields: *d.APIBaseFields.MapToWrite(),
 		Manufacturer:       d.Manufacturer.Id,
 	}
 }
 
 type DeviceTypeWrite struct {
-	ApiWriteBaseFields
+	APIWriteBaseFields
 	Manufacturer int `json:"manufacturer,omitempty"`
 }

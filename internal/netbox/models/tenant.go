@@ -1,19 +1,19 @@
 package models
 
 type NestedTenant struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
 type Tenant struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
-func (t Tenant) MapToWrite() ApiResourceWrite {
+func (t Tenant) MapToWrite() APIResourceWrite {
 	return &TenantWrite{
-		ApiWriteBaseFields: *t.ApiBaseFields.MapToWrite(),
+		APIWriteBaseFields: *t.APIBaseFields.MapToWrite(),
 	}
 }
 
 type TenantWrite struct {
-	ApiWriteBaseFields
+	APIWriteBaseFields
 }

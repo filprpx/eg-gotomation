@@ -1,19 +1,19 @@
 package models
 
 type NestedLocation struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
 type Location struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
-func (d Location) MapToWrite() ApiResourceWrite {
+func (d Location) MapToWrite() APIResourceWrite {
 	return &LocationWrite{
-		ApiWriteBaseFields: *d.ApiBaseFields.MapToWrite(),
+		APIWriteBaseFields: *d.APIBaseFields.MapToWrite(),
 	}
 }
 
 type LocationWrite struct {
-	ApiWriteBaseFields
+	APIWriteBaseFields
 }

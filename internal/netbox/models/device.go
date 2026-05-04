@@ -1,11 +1,11 @@
 package models
 
 type NestedDevice struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
 type Device struct {
-	ApiBaseFields
+	APIBaseFields
 	DeviceType NestedDeviceType `json:"device_type"`
 	Role       NestedDeviceRole `json:"role"`
 	Site       NestedSite       `json:"site"`
@@ -15,9 +15,9 @@ type Device struct {
 	Airflow    Choice           `json:"airflow"`
 }
 
-func (d Device) MapToWrite() ApiResourceWrite {
+func (d Device) MapToWrite() APIResourceWrite {
 	return &DeviceWrite{
-		ApiWriteBaseFields: *d.ApiBaseFields.MapToWrite(),
+		APIWriteBaseFields: *d.APIBaseFields.MapToWrite(),
 		DeviceType:         d.DeviceType.Id,
 		Role:               d.Role.Id,
 		Site:               d.Site.Id,
@@ -27,7 +27,7 @@ func (d Device) MapToWrite() ApiResourceWrite {
 }
 
 type DeviceWrite struct {
-	ApiWriteBaseFields
+	APIWriteBaseFields
 	DeviceType int `json:"device_type,omitempty"`
 	Role       int `json:"role,omitempty"`
 	Site       int `json:"site,omitempty"`

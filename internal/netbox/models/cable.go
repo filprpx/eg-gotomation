@@ -1,19 +1,19 @@
 package models
 
 type NestedCable struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
 type Cable struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
-func (c Cable) MapToWrite() ApiResourceWrite {
+func (c Cable) MapToWrite() APIResourceWrite {
 	return &CableWrite{
-		ApiWriteBaseFields: *c.ApiBaseFields.MapToWrite(),
+		APIWriteBaseFields: *c.APIBaseFields.MapToWrite(),
 	}
 }
 
 type CableWrite struct {
-	ApiWriteBaseFields
+	APIWriteBaseFields
 }

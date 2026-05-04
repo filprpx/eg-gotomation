@@ -1,19 +1,19 @@
 package models
 
 type NestedDeviceRole struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
 type DeviceRole struct {
-	ApiBaseFields
+	APIBaseFields
 }
 
-func (d DeviceRole) MapToWrite() ApiResourceWrite {
+func (d DeviceRole) MapToWrite() APIResourceWrite {
 	return &DeviceRoleWrite{
-		ApiWriteBaseFields: *d.ApiBaseFields.MapToWrite(),
+		APIWriteBaseFields: *d.APIBaseFields.MapToWrite(),
 	}
 }
 
 type DeviceRoleWrite struct {
-	ApiWriteBaseFields
+	APIWriteBaseFields
 }

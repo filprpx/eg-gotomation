@@ -11,14 +11,13 @@ import (
 )
 
 func main() {
-
 	client, err := netbox.NewClient()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	ctx := context.Background()
-	devices, err := client.DCIM.Device.List(ctx)
+	devices, err := client.Device.List(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +33,7 @@ func main() {
 
 	firstDevice.Name = fmt.Sprintf("%s-%d", firstDevice.Name, rand.Intn(100000))
 	firstDevice.Id = 0
-	clonedDevice, err := client.DCIM.Device.Create(ctx, &firstDevice)
+	clonedDevice, err := client.Device.Create(ctx, &firstDevice)
 	if err != nil {
 		log.Fatal(err)
 	}

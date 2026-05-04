@@ -1,3 +1,4 @@
+// Package netbox is used to interface with netbox API
 package netbox
 
 import (
@@ -7,6 +8,7 @@ import (
 
 type Client struct {
 	restapi.BaseClient
+	Auth
 
 	Cable        *dcim.CableAPI
 	Device       *dcim.DeviceAPI
@@ -17,7 +19,7 @@ type Client struct {
 }
 
 func (c *Client) PrepareHeaders() {
-	c.Header.Add("Authorization", "Token "+c.ApiKey)
+	c.Header.Add("Authorization", "Token "+c.APIKey)
 }
 
 func NewClient() (*Client, error) {
@@ -32,7 +34,8 @@ func NewClientWithConfig(cfg *Config) (*Client, error) {
 	}
 
 	client := &Client{
-		Config: *cfg,
+		BaseClient: *restapi.NewBaseClientWithConfig(&cfg.Config),
+		Auth:       cfg.Auth,
 	}
 
 	client.PrepareHeaders()

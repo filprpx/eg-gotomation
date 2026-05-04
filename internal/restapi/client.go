@@ -1,3 +1,4 @@
+// Package restapi is used as basis of common definitions and actions any concrete client that interacts with rest apis may need
 package restapi
 
 import (
@@ -10,9 +11,9 @@ type BaseClient struct {
 	Config
 }
 
-func NewBaseClient(baseUrl string) *BaseClient {
+func NewBaseClient(baseURL string) *BaseClient {
 	cfg := NewConfig()
-	cfg.BaseUrl = baseUrl
+	cfg.BaseURL = baseURL
 
 	return NewBaseClientWithConfig(cfg)
 }
@@ -40,7 +41,7 @@ func (c *BaseClient) Delete(ctx context.Context, path string) (*http.Response, e
 }
 
 func (c *BaseClient) do(ctx context.Context, method string, path string, body io.Reader) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(ctx, method, c.BaseUrl+path, body)
+	req, err := http.NewRequestWithContext(ctx, method, c.BaseURL+path, body)
 	if err != nil {
 		return nil, err
 	}

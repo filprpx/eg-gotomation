@@ -17,7 +17,7 @@ func main() {
 
 	ctx := context.Background()
 
-	devices, err := client.DCIM.Device.List(ctx)
+	devices, err := client.Device.List(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,12 +32,8 @@ func main() {
 	lastDevice := devices[len(devices)-1]
 	fmt.Printf("Selecting last one id:%d, name: %s\n", lastDevice.Id, lastDevice.Name)
 
-	ok, err := client.DCIM.Device.Delete(ctx, &lastDevice)
+	ok, err := client.Device.Delete(ctx, &lastDevice)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	if ok {
-		fmt.Printf("Device deleted successfully\n")
 	}
 }

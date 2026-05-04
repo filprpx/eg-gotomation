@@ -1,3 +1,7 @@
+// Package api is used to configure the comunication with the netbox api
+// base.go is the common implementation to work with the api actions
+// the direct resources (e.g. devices) only specificy the desired endpoint, but at any point it is possible to
+// override the generic functions into specific ones for each resource.
 package api
 
 import (
@@ -10,12 +14,12 @@ import (
 	"github.com/filprpx/eg-gotomation/internal/restapi"
 )
 
-type BaseAPI[T models.ApiResource] struct {
+type BaseAPI[T models.APIResource] struct {
 	doer restapi.Doer
 	path string
 }
 
-func NewBaseAPI[T models.ApiResource](d restapi.Doer, path string) *BaseAPI[T] {
+func NewBaseAPI[T models.APIResource](d restapi.Doer, path string) *BaseAPI[T] {
 	return &BaseAPI[T]{
 		doer: d,
 		path: path,
@@ -30,10 +34,10 @@ func (a *BaseAPI[T]) List(ctx context.Context) ([]T, error) {
 	defer res.Body.Close()
 
 	if restapi.IsError(res) {
-		return nil, restapi.ApiError(res)
+		return nil, restapi.APIError(res)
 	}
 
-	var result models.ApiListResponse[T]
+	var result models.APIListResponse[T]
 	err = json.NewDecoder(res.Body).Decode(&result)
 	if err != nil {
 		return nil, err
@@ -54,7 +58,7 @@ func (a *BaseAPI[T]) Get(ctx context.Context, id int) (*T, error) {
 	defer res.Body.Close()
 
 	if restapi.IsError(res) {
-		return nil, restapi.ApiError(res)
+		return nil, restapi.APIError(res)
 	}
 
 	var result T
@@ -78,7 +82,8 @@ func (a *BaseAPI[T]) Create(ctx context.Context, obj *T) (*T, error) {
 		return nil, fmt.Errorf("failed to marshal: %w", err)
 	}
 
-	res, err := a.doer.Post(ctx,
+	res, err := a.doer.Post(
+		ctx,
 		a.path,
 		bytes.NewReader(payload),
 	)
@@ -88,7 +93,7 @@ func (a *BaseAPI[T]) Create(ctx context.Context, obj *T) (*T, error) {
 	defer res.Body.Close()
 
 	if restapi.IsError(res) {
-		return nil, restapi.ApiError(res)
+		return nil, restapi.APIError(res)
 	}
 
 	var result T
@@ -100,59 +105,61 @@ func (a *BaseAPI[T]) Create(ctx context.Context, obj *T) (*T, error) {
 	return &result, nil
 }
 
-func (a *BaseAPI[T]) Update(ctx context.Context, obj *T) error {
+func (a *BaseAPI[T]) Update(ctx context.Context, obj *T) (bool, error) {
 	if obj == nil {
-		return fmt.Errorf("obj can't be nil")
+		return false, fmt.Errorf("obj can't be nil")
 	}
 
 	entity := (*obj)
 
 	if entity.GetId() == 0 {
-		return fmt.Errorf("obj.Id can't be zero")
+		return false, fmt.Errorf("obj.Id can't be zero")
 	}
 
 	payload, err := json.Marshal(entity.MapToWrite())
 	if err != nil {
-		return fmt.Errorf("failed to marshal: %w", err)
+		return false, fmt.Errorf("failed to marshal: %w", err)
 	}
 
-	res, err := a.doer.Patch(ctx,
+	res, err := a.doer.Patch(
+		ctx,
 		fmt.Sprintf("%s%d/", a.path, entity.GetId()),
 		bytes.NewReader(payload),
 	)
 	if err != nil {
-		return err
+		return false, err
 	}
 	defer res.Body.Close()
 
 	if restapi.IsError(res) {
-		return restapi.ApiError(res)
+		return false, restapi.APIError(res)
 	}
 
-	return nil
+	return true, nil
 }
 
-func (a *BaseAPI[T]) Delete(ctx context.Context, obj *T) error {
+func (a *BaseAPI[T]) Delete(ctx context.Context, obj *T) (bool, error) {
 	if obj == nil {
-		return fmt.Errorf("obj can't be nil")
+		return false, fmt.Errorf("obj can't be nil")
 	}
 
 	entity := (*obj)
 
 	if entity.GetId() == 0 {
-		return fmt.Errorf("obj.Id can't be zero")
+		return false, fmt.Errorf("obj.Id can't be zero")
 	}
 
-	res, err := a.doer.Delete(ctx,
+	res, err := a.doer.Delete(
+		ctx,
 		fmt.Sprintf("%s%d/", a.path, entity.GetId()),
 	)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	if restapi.IsError(res) {
-		return restapi.ApiError(res)
+		return false, restapi.APIError(res)
 	}
 
-	return nil
+	return true, nil
 }

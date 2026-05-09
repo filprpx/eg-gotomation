@@ -2,13 +2,16 @@
 package netbox
 
 import (
+	"github.com/filprpx/eg-gotomation/internal/netbox/api"
 	"github.com/filprpx/eg-gotomation/internal/netbox/api/dcim"
 	"github.com/filprpx/eg-gotomation/internal/restapi"
 )
 
 type Client struct {
-	restapi.BaseClient
+	restapi.Client
 	Auth
+
+	Raw *api.RawAPI
 
 	Cable        *dcim.CableAPI
 	Device       *dcim.DeviceAPI
@@ -34,17 +37,20 @@ func NewClientWithConfig(cfg *Config) (*Client, error) {
 	}
 
 	client := &Client{
-		BaseClient: *restapi.NewBaseClientWithConfig(&cfg.Config),
-		Auth:       cfg.Auth,
+		Client: *restapi.NewClientWithConfig(&cfg.Config),
+		Auth:   cfg.Auth,
 	}
 
 	client.PrepareHeaders()
+
+	client.Raw = api.NewRawAPI(client)
 
 	client.Cable = dcim.NewCableAPI(client)
 	client.Device = dcim.NewDeviceAPI(client)
 	client.DeviceRole = dcim.NewDeviceRoleAPI(client)
 	client.DeviceType = dcim.NewDeviceTypeAPI(client)
 	client.Manufacturer = dcim.NewManufacturerAPI(client)
+	client.Site = dcim.NewSiteAPI(client)
 
 	return client, nil
 }

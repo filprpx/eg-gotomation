@@ -32,7 +32,7 @@ func main() {
 	lastDevice := devices[len(devices)-1]
 	fmt.Printf("Selecting last one id:%d, name: %s\n", lastDevice.Id, lastDevice.Name)
 
-	ok, err := client.Device.Delete(ctx, &lastDevice)
+	err = client.Device.Delete(ctx, &lastDevice)
 	if err != nil {
 		log.Fatal(err)
 	}

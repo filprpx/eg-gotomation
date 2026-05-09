@@ -1,4 +1,4 @@
-package dcim
+package tenancy
 
 import (
 	"github.com/filprpx/eg-gotomation/internal/netbox/api"

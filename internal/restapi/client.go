@@ -2,59 +2,60 @@
 package restapi
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
 
-type BaseClient struct {
+type Client struct {
 	Config
 }
 
-func NewBaseClient(baseURL string) *BaseClient {
+func NewClient(baseURL string) *Client {
 	cfg := NewConfig()
 	cfg.BaseURL = baseURL
 
-	return NewBaseClientWithConfig(cfg)
+	return NewClientWithConfig(cfg)
 }
 
-func NewBaseClientWithConfig(cfg *Config) *BaseClient {
-	return &BaseClient{
+func NewClientWithConfig(cfg *Config) *Client {
+	return &Client{
 		Config: *cfg,
 	}
 }
 
-func (c *BaseClient) Get(ctx context.Context, path string) (*http.Response, error) {
-	return c.do(ctx, "GET", path, nil)
-}
+func (c *Client) Do(ctx context.Context, req Request) (*http.Response, error) {
+	url := c.BaseURL + req.Path
+	if req.Query != nil {
+		url = url + "?" + req.Query.Encode()
+	}
 
-func (c *BaseClient) Post(ctx context.Context, path string, body io.Reader) (*http.Response, error) {
-	return c.do(ctx, "POST", path, body)
-}
+	var body io.Reader
+	if req.Body != nil {
+		b, err := json.Marshal(req.Body)
+		if err != nil {
+			return nil, fmt.Errorf("marshal: %w", err)
+		}
+		body = bytes.NewReader(b)
+	}
 
-func (c *BaseClient) Patch(ctx context.Context, path string, body io.Reader) (*http.Response, error) {
-	return c.do(ctx, "PATCH", path, body)
-}
-
-func (c *BaseClient) Delete(ctx context.Context, path string) (*http.Response, error) {
-	return c.do(ctx, "DELETE", path, nil)
-}
-
-func (c *BaseClient) do(ctx context.Context, method string, path string, body io.Reader) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(ctx, method, c.BaseURL+path, body)
+	httpReq, err := http.NewRequestWithContext(ctx, req.Method, url, body)
 	if err != nil {
 		return nil, err
 	}
 
 	for key, values := range c.Header {
 		for _, value := range values {
-			req.Header.Add(key, value)
+			httpReq.Header.Add(key, value)
 		}
 	}
 
 	if body != nil {
-		req.Header.Add("Content-Type", "application/json")
+		httpReq.Header.Add("Content-Type", "application/json")
 	}
 
-	return c.HTTP.Do(req)
+	return c.HTTP.Do(httpReq)
 }

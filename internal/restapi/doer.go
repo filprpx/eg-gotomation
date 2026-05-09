@@ -2,13 +2,17 @@ package restapi
 
 import (
 	"context"
-	"io"
 	"net/http"
+	"net/url"
 )
 
+type Request struct {
+	Method string
+	Path   string
+	Query  url.Values
+	Body   any
+}
+
 type Doer interface {
-	Get(ctx context.Context, path string) (*http.Response, error)
-	Post(ctx context.Context, path string, body io.Reader) (*http.Response, error)
-	Patch(ctx context.Context, path string, body io.Reader) (*http.Response, error)
-	Delete(ctx context.Context, path string) (*http.Response, error)
+	Do(ctx context.Context, req Request) (*http.Response, error)
 }

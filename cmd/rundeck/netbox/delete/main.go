@@ -17,7 +17,7 @@ func main() {
 
 	ctx := context.Background()
 
-	devices, err := client.Device.List(ctx)
+	devices, err := client.Device.List(ctx, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

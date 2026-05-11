@@ -23,7 +23,7 @@ func main() {
 
 	ctx := context.Background()
 
-	devices, err := netbox.Device.List(ctx)
+	devices, err := netbox.Device.List(ctx, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

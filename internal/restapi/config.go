@@ -11,7 +11,7 @@ type Config struct {
 	Header  http.Header
 }
 
-func NewConfig() *Config {
+func DefaultConfig() *Config {
 	return &Config{
 		BaseURL: "",
 		HTTP: &http.Client{

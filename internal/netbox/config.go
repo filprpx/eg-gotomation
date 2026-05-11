@@ -16,7 +16,7 @@ type Config struct {
 
 func DefaultConfig() *Config {
 	return &Config{
-		Config: *restapi.NewConfig(),
+		Config: *restapi.DefaultConfig(),
 		Auth:   *NewAuth(""),
 	}
 }

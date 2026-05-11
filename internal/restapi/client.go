@@ -15,7 +15,7 @@ type Client struct {
 }
 
 func NewClient(baseURL string) *Client {
-	cfg := NewConfig()
+	cfg := DefaultConfig()
 	cfg.BaseURL = baseURL
 
 	return NewClientWithConfig(cfg)

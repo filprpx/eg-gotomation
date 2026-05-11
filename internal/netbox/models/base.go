@@ -1,6 +1,12 @@
 // Package models is as the common definitions for the resources in netbox api
 package models
 
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
+
 type APIResource interface {
 	GetId() int
 	MapToWrite() APIResourceWrite
@@ -16,13 +22,16 @@ type APIListResponse[T any] struct {
 }
 
 type APIBaseFields struct {
-	Id          int    `json:"id,omitempty"`
-	Url         string `json:"url,omitempty"`
-	DisplayUrl  string `json:"display_url,omitempty"`
-	Display     string `json:"display,omitempty"`
-	Name        string `json:"name,omitempty"`
-	Slug        string `json:"slug,omitempty"`
-	Description string `json:"description,omitempty"`
+	Id          int       `json:"id,omitempty"`
+	Url         string    `json:"url,omitempty"`
+	DisplayUrl  string    `json:"display_url,omitempty"`
+	Display     string    `json:"display,omitempty"`
+	Name        string    `json:"name,omitempty"`
+	Slug        string    `json:"slug,omitempty"`
+	Description string    `json:"description,omitempty"`
+	Comments    string    `json:"comments,omitempty"`
+	Created     time.Time `json:"created"`
+	LastUpdated time.Time `json:"last_updated"`
 }
 
 func (a APIBaseFields) GetId() int {
@@ -46,27 +55,59 @@ type APIWriteBaseFields struct {
 }
 
 type Choice struct {
-	Value string
+	Value any
 	Label string
 }
 
-// Idea I had, but I am not sure it is possible to achieve cleanly
-// type IAPIEntity[T any] interface {
-// 	List(ctx context.Context) (*[]T, error)
-// 	Get(ctx context.Context, id int) (*T, error)
-// 	Create(ctx context.Context, e *T) (*T, error)
-// 	Update(ctx context.Context, e *T) (bool, error)
-// 	Delete(ctx context.Context, id int) (bool, error)
-// }
+func SafeGetId[T interface{ GetId() int }](obj *T) int {
+	if obj == nil {
+		return 0
+	}
+	return (*obj).GetId()
+}
 
-// type APIModelDefaultActions[T any] struct {
-// 	APIEntity IAPIEntity[T]
-// }
+func safeChoiceValue(choice *Choice) string {
+	if choice == nil {
+		return ""
+	}
 
-// func (a *APIModelDefaultActions) Update(ctx context.Context) (bool, error) {
-// 	return a.Update(ctx, a)
-// }
-//
-// func (a *APIModelDefaultActions) Delete(ctx context.Context) (bool, error) {
-// 	return a.Delete(ctx, a.Id)
-// }
+	switch v := choice.Value.(type) {
+	case string:
+		return v
+	case float64:
+		return strconv.FormatFloat(v, 'f', -1, 64)
+	case int:
+		return strconv.Itoa(v)
+	case int64:
+		return strconv.FormatInt(v, 10)
+	case uint64:
+		return strconv.FormatUint(v, 10)
+	default:
+		return fmt.Sprint(v)
+	}
+}
+
+func safeChoiceIntValue(choice *Choice) int {
+	if choice == nil {
+		return 0
+	}
+
+	switch v := choice.Value.(type) {
+	case float64:
+		return int(v)
+	case int:
+		return v
+	case int64:
+		return int(v)
+	case uint64:
+		return int(v)
+	case string:
+		n, err := strconv.Atoi(v)
+		if err != nil {
+			return 0
+		}
+		return n
+	default:
+		return 0
+	}
+}
